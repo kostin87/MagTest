@@ -527,7 +527,7 @@ VaR=VaR(r)
 test_object("VaR")
 ```
 
---- type:NormalExercise lang:r xp:100 skills:5 key:558478a59e
+--- type:NormalExercise lang:r xp:100 skills:5 key:ceb950357f
 ## VaR1
 
 
