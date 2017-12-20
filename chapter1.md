@@ -603,20 +603,10 @@ test_object("SPY")
 
 *** =pre_exercise_code
 ```{r}
-require("xts")
+require("timeSeries")
 require("fPortfolio")
 require("quantmod")
 
-r<-NULL
-assets<-c("SPY","IBM","AMZN","AMGN")
-for(symbol in assets){
-  getSymbols(symbol,src="yahoo")
-  r<-cbind(r,diff(log(get(symbol)[,paste(symbol,".Close",sep="")])))
-}
-names(r)<-assets
-r<-r[!is.na(rowSums(r)),]
-
-r <- as.timeSeries(r)
 ```
 
 *** =sample_code
@@ -649,7 +639,7 @@ test_object("frontier")
 
 *** =pre_exercise_code
 ```{r}
-require("xts")
+require("timeSeries")
 require("fPortfolio")
 require("quantmod")
 
@@ -695,7 +685,7 @@ test_function_result("tailoredFrontierPlot")
 
 *** =pre_exercise_code
 ```{r}
-require("xts")
+require("timeSeries")
 require("fPortfolio")
 require("quantmod")
 
