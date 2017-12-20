@@ -564,3 +564,87 @@ sharp_ratio=SharpeRatio(r)
 ```{r}
 test_object("sharp_ratio")
 ```
+
+--- type:MultipleChoiceExercise lang:r xp:50 skills:1 key:9b4289a5d2
+## Результаты регрессии1
+
+У вас есть результаты sharp_ratio. Стоит ли вкладывать в этот актив?
+
+*** =instructions
+- Да
+- Нет
+
+*** =pre_exercise_code
+```{r}
+library('timeSeries')
+library("PerformanceAnalytics")
+n=round(runif(1, min = 1, max = 30))
+load(url("http://s3.amazonaws.com/assets.datacamp.com/production/course_2233/datasets/SPY.RData"))
+spy=SPY[[1]][((n-1)*390+1):(n*390),2]
+r<-diff(log(spy))
+r=timeSeries(r,charvec=(1:NROW(r))*24*60*60)
+sharp_ratio=SharpeRatio(r)
+```
+
+*** =sct
+```{r}
+test_mc(correct = ifelse(sharp_ratio[1]>0,1,0))
+```
+
+
+--- type:NormalExercise lang:r xp:100 skills:1 key:6e49561710
+## Эффективная граница fPortfolio
+
+
+*** =instructions
+
+*** =hint
+
+*** =pre_exercise_code
+```{r}
+require("xts")
+require("fPortfolio")
+require("quantmod")
+
+data=NULL
+for(i in c('BK',"CSCO","GILD","GOOG","KO","SPG")){
+  data=cbind(data,diff(log(price[,i])))
+}
+
+r<-NULL
+assets<-c("SPY","IBM","AMZN","AMGN")
+for(symbol in assets){
+  getSymbols(symbol,src="yahoo")
+  r<-cbind(r,diff(log(get(symbol)[,paste(symbol,".Close",sep="")])))
+}
+names(r)<-assets
+r<-r[!is.na(rowSums(r)),]
+
+data_ts <- as.timeSeries(r)
+
+spec <- portfolioSpec()
+constraints <- c("LongOnly")
+portfolioConstraints(data_ts, spec, constraints)
+frontier <- portfolioFrontier(data_ts, spec, constraints)
+print(frontier)
+
+frontier@portfolio
+
+tailoredFrontierPlot(object = frontier)
+weightsPlot(frontier, col = rainbow(4))
+```
+
+*** =sample_code
+```{r}
+
+```
+
+*** =solution
+```{r}
+
+```
+
+*** =sct
+```{r}
+
+```
