@@ -592,12 +592,41 @@ test_mc(correct = ifelse(sharp_ratio[1]>0,1,0))
 ```
 
 
---- type:NormalExercise lang:r xp:100 skills:1 key:6e49561710
-## Эффективная граница fPortfolio
+
+--- type:NormalExercise lang:r xp:100 skills:1 key:09f5eaf7a1
+## Загрузка данных с yahoo
 
 
 *** =instructions
+-Загрузите данные SPY
 
+*** =hint
+
+*** =pre_exercise_code
+```{r}
+require("quantmod")
+```
+
+*** =sample_code
+```{r}
+
+```
+
+*** =solution
+```{r}
+getSymbols('SPY')
+```
+
+*** =sct
+```{r}
+test_object("SPY")
+```
+--- type:NormalExercise lang:r xp:100 skills:1 key:6e49561710
+## Эффективная граница fPortfolio 1
+
+
+*** =instructions
+- У вас есть timeSeries матрица доходностей r. Создайте переменную эффективной границы в виде переменной frontier с пакетом fPortfolio. Ограничение - мы можем занимать только длинные позиции.
 *** =hint
 
 *** =pre_exercise_code
@@ -605,11 +634,6 @@ test_mc(correct = ifelse(sharp_ratio[1]>0,1,0))
 require("xts")
 require("fPortfolio")
 require("quantmod")
-
-data=NULL
-for(i in c('BK',"CSCO","GILD","GOOG","KO","SPG")){
-  data=cbind(data,diff(log(price[,i])))
-}
 
 r<-NULL
 assets<-c("SPY","IBM","AMZN","AMGN")
@@ -620,18 +644,7 @@ for(symbol in assets){
 names(r)<-assets
 r<-r[!is.na(rowSums(r)),]
 
-data_ts <- as.timeSeries(r)
-
-spec <- portfolioSpec()
-constraints <- c("LongOnly")
-portfolioConstraints(data_ts, spec, constraints)
-frontier <- portfolioFrontier(data_ts, spec, constraints)
-print(frontier)
-
-frontier@portfolio
-
-tailoredFrontierPlot(object = frontier)
-weightsPlot(frontier, col = rainbow(4))
+r <- as.timeSeries(r)
 ```
 
 *** =sample_code
@@ -641,10 +654,107 @@ weightsPlot(frontier, col = rainbow(4))
 
 *** =solution
 ```{r}
+spec <- portfolioSpec()
+constraints <- c("LongOnly")
+portfolioConstraints(r, spec, constraints)
+frontier <- portfolioFrontier(r, spec, constraints)
 
 ```
 
 *** =sct
 ```{r}
+test_object("frontier")
+```
 
+--- type:NormalExercise lang:r xp:100 skills:1 key:5dc1635df4
+## Эффективная граница fPortfolio 2
+
+
+*** =instructions
+- У вас есть переменная frontier эффективной границы с пакета fPortfolio. Отобразите график эффективной границы.
+
+*** =hint
+
+*** =pre_exercise_code
+```{r}
+require("xts")
+require("fPortfolio")
+require("quantmod")
+
+r<-NULL
+assets<-c("SPY","IBM","AMZN","AMGN")
+for(symbol in assets){
+  getSymbols(symbol,src="yahoo")
+  r<-cbind(r,diff(log(get(symbol)[,paste(symbol,".Close",sep="")])))
+}
+names(r)<-assets
+r<-r[!is.na(rowSums(r)),]
+
+r <- as.timeSeries(r)
+
+spec <- portfolioSpec()
+constraints <- c("LongOnly")
+portfolioConstraints(r, spec, constraints)
+frontier <- portfolioFrontier(r, spec, constraints)
+```
+
+*** =sample_code
+```{r}
+frontier
+```
+
+*** =solution
+```{r}
+tailoredFrontierPlot(object = frontier)
+```
+
+*** =sct
+```{r}
+test_function_result("tailoredFrontierPlot")
+```
+
+--- type:NormalExercise lang:r xp:100 skills:1 key:5344097cc7
+## Эффективная граница fPortfolio 3
+
+*** =instructions
+- У вас есть переменная frontier эффективной границы с пакета fPortfolio. Отобразите гафик весов по доходности и дисперсии.
+
+*** =hint
+
+*** =pre_exercise_code
+```{r}
+require("xts")
+require("fPortfolio")
+require("quantmod")
+
+r<-NULL
+assets<-c("SPY","IBM","AMZN","AMGN")
+for(symbol in assets){
+  getSymbols(symbol,src="yahoo")
+  r<-cbind(r,diff(log(get(symbol)[,paste(symbol,".Close",sep="")])))
+}
+names(r)<-assets
+r<-r[!is.na(rowSums(r)),]
+
+r <- as.timeSeries(r)
+
+spec <- portfolioSpec()
+constraints <- c("LongOnly")
+portfolioConstraints(r, spec, constraints)
+frontier <- portfolioFrontier(r, spec, constraints)
+```
+
+*** =sample_code
+```{r}
+frontier
+```
+
+*** =solution
+```{r}
+weightsPlot(frontier)
+```
+
+*** =sct
+```{r}
+test_function_result("weightsPlot")
 ```
