@@ -527,8 +527,8 @@ VaR=VaR(r)
 test_object("VaR")
 ```
 
---- type:NormalExercise lang:r xp:100 skills:5 key:ceb950357f
-## VaR1
+--- type:NormalExercise lang:r xp:100 skills:1 key:285bccf614
+## Sharp Ratio
 
 
 
